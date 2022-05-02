@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 const val DEFAULT_RATE_LIMIT_DURATION_IN_SECONDS: Long = 10
-const val DEFAULT_RATE_LIMIT: Int = 10
+const val DEFAULT_RATE_LIMIT: Int = 5
 const val MAX_HASHMAP_SIZE: Long = 1000
 const val HASHMAP_RESET_TIME_IN_MINUTES: Long = 10
 
