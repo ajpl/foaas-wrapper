@@ -21,6 +21,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.basic
 import io.ktor.server.auth.principal
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.origin
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -53,11 +54,13 @@ fun Application.message(ApiClient: APIClient = applicationAPIClient) {
                 try {
                     val rate = rateLimiter.useQuota(call.principal<UserIdPrincipal>()?.name!!)
                     if (rate.isQuotaEmpty()) {
+                        call.application.environment.log.info("[${call.request.origin.remoteHost}] - Blocked on \"/messages\" because of Too Many Requests")
                         val retryTime: Long =
                             (rate.resetInstant.epochSecond - Instant.now().epochSecond).coerceAtLeast(0)
                         call.response.headers.append(RateLimitHeaders.HEADER_RETRY.value, retryTime.toString())
                         call.respond(HttpStatusCode.TooManyRequests)
                     } else {
+                        call.application.environment.log.info("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Remaining Quota: ${rate.quota}")
                         call.response.headers.append(RateLimitHeaders.HEADER_REMAINING.value, rate.quota.toString())
                         call.response.headers.append(RateLimitHeaders.HEADER_LIMIT.value, rateLimiter.quota.toString())
                         call.response.headers.append(
@@ -69,18 +72,21 @@ fun Application.message(ApiClient: APIClient = applicationAPIClient) {
                 } catch (ex: Exception) {
                     when (ex) {
                         is RedirectResponseException, is ClientRequestException, is ServerResponseException, is ResponseException -> {
+                            call.application.environment.log.error("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Remote server failed")
                             call.respond(
                                 HttpStatusCode.UnprocessableEntity,
                                 ErrorResponse("The server did not return a successful response")
                             )
                         }
                         is IllegalHTTPCodeException -> {
+                            call.application.environment.log.error("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Remote server returned illegal HTTP status code")
                             call.respond(
                                 HttpStatusCode.UnprocessableEntity,
                                 ErrorResponse("The server does not give a fuck about RFC7231")
                             )
                         }
                         else -> {
+                            call.application.environment.log.error("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Internal server error: ${ex.message}")
                             call.respond(
                                 HttpStatusCode.InternalServerError,
                                 ErrorResponse("There was an unexpected error")
