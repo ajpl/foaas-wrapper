@@ -86,7 +86,7 @@ fun Application.message(ApiClient: APIClient = applicationAPIClient) {
                             )
                         }
                         else -> {
-                            call.application.environment.log.error("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Internal server error: ${ex.message}")
+                            call.application.environment.log.error("[${call.request.origin.remoteHost}] - Accessed to \"/messages\" | Internal server error")
                             call.respond(
                                 HttpStatusCode.InternalServerError,
                                 ErrorResponse("There was an unexpected error")
