@@ -16,9 +16,8 @@ class RateLimiter<T : Any>(val quota: Int = DEFAULT_RATE_LIMIT, val resetDuratio
     private val lastGeneralReset: Instant = Instant.now()
 
     fun useQuota(key: T): Rate {
-        val rate = activity[key]
-        activity.compute(key) { _, rate: Rate? ->
-            val currentRate: Rate = rate?.reset(quota, resetDuration) ?: getNewRate()
+        activity.compute(key) { _, keyRate: Rate? ->
+            val currentRate: Rate = keyRate?.reset(quota, resetDuration) ?: getNewRate()
             currentRate.useQuota()
         }
         if (shouldReset()) {

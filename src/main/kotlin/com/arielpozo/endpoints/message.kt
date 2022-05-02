@@ -6,15 +6,24 @@ import com.arielpozo.classes.RateLimitHeaders
 import com.arielpozo.classes.RateLimiter
 import com.arielpozo.dataclasses.ErrorResponse
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.client.plugins.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.RedirectResponseException
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.basic
+import io.ktor.server.auth.principal
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import java.time.Instant
 
 val applicationAPIClient = APIClient()
