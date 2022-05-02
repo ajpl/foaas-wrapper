@@ -86,24 +86,24 @@ class ApplicationTest {
             application {
                 message(mockAPI)
             }
-                client.get("/message") {
-                    headers {
-                        append(HttpHeaders.Authorization, "Basic dGVzdDQ6dGVzdDQ=")
-                    }
-                }.apply {
-                    val expected = ErrorResponse("The server does not give a fuck about RFC7231")
-                    val response = jacksonObjectMapper().readValue<ErrorResponse>(bodyAsText())
-                    assertEquals(HttpStatusCode.UnprocessableEntity, status)
-                    assertEquals(expected.message, response.message)
+            client.get("/message") {
+                headers {
+                    append(HttpHeaders.Authorization, "Basic dGVzdDQ6dGVzdDQ=")
                 }
+            }.apply {
+                val expected = ErrorResponse("The server does not give a fuck about RFC7231")
+                val response = jacksonObjectMapper().readValue<ErrorResponse>(bodyAsText())
+                assertEquals(HttpStatusCode.UnprocessableEntity, status)
+                assertEquals(expected.message, response.message)
             }
         }
+    }
     @Test
     fun `message with remote server failing`() {
         testApplication {
             val mockAPI = mockk<APIClient>()
             val mockEx = mockk<ServerResponseException>()
-            every { runBlocking { mockAPI.callFoaas() }}.throws(mockEx)
+            every { runBlocking { mockAPI.callFoaas() } }.throws(mockEx)
             application {
                 message(mockAPI)
             }
@@ -125,7 +125,7 @@ class ApplicationTest {
         testApplication {
             val mockAPI = mockk<APIClient>()
             val mockEx = mockk<Exception>()
-            every { runBlocking { mockAPI.callFoaas() }}.throws(mockEx)
+            every { runBlocking { mockAPI.callFoaas() } }.throws(mockEx)
             application {
                 message(mockAPI)
             }
@@ -150,14 +150,14 @@ class ApplicationTest {
             application {
                 message(mockAPI)
             }
-                client.get("/message") {
-                    headers {
-                        append(HttpHeaders.Authorization, "Basic cmF0ZTE6cmF0ZTE=")
-                    }
-                }.apply {
-                    assertEquals(headers[RateLimitHeaders.HEADER_REMAINING.value]!!.toInt(), DEFAULT_RATE_LIMIT - 1)
-                    assertEquals(headers[RateLimitHeaders.HEADER_LIMIT.value]!!.toInt(), DEFAULT_RATE_LIMIT)
-                    assertTrue(headers.contains(RateLimitHeaders.HEADER_RESET.value))
+            client.get("/message") {
+                headers {
+                    append(HttpHeaders.Authorization, "Basic cmF0ZTE6cmF0ZTE=")
+                }
+            }.apply {
+                assertEquals(headers[RateLimitHeaders.HEADER_REMAINING.value]!!.toInt(), DEFAULT_RATE_LIMIT - 1)
+                assertEquals(headers[RateLimitHeaders.HEADER_LIMIT.value]!!.toInt(), DEFAULT_RATE_LIMIT)
+                assertTrue(headers.contains(RateLimitHeaders.HEADER_RESET.value))
             }
         }
     }
@@ -170,7 +170,7 @@ class ApplicationTest {
             application {
                 message(mockAPI)
             }
-            for (iter in 1..DEFAULT_RATE_LIMIT+1) {
+            for (iter in 1..DEFAULT_RATE_LIMIT + 1) {
                 client.get("/message") {
                     headers {
                         append(HttpHeaders.Authorization, "Basic cmF0ZTpyYXRl")
@@ -184,6 +184,4 @@ class ApplicationTest {
             }
         }
     }
-
-
 }

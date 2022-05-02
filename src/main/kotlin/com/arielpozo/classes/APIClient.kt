@@ -12,9 +12,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-
 const val FOAAS_ENDPOINT = "https://www.foaas.com/yeah/ari"
-
 
 class APIClient(engine: HttpClientEngine = CIO.create()) {
     private val engine = engine
@@ -22,7 +20,7 @@ class APIClient(engine: HttpClientEngine = CIO.create()) {
         try {
             HttpClient(this.engine) {
                 install(HttpCache)
-                install(HttpRequestRetry){
+                install(HttpRequestRetry) {
                     retryOnServerErrors(maxRetries = 3)
                     exponentialDelay()
                 }

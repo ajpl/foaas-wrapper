@@ -6,15 +6,12 @@ import io.ktor.client.plugins.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-
 internal class APIClientTest {
-
 
     @Test
     fun `Remote server response is the expected one`() {
@@ -61,7 +58,7 @@ internal class APIClientTest {
                     status = HttpStatusCode.InternalServerError,
                 )
             }
-            assertFailsWith<ServerResponseException>{
+            assertFailsWith<ServerResponseException> {
                 val apiClient = APIClient(mockEngine)
                 apiClient.callFoaas()
             }
@@ -84,5 +81,4 @@ internal class APIClientTest {
             }
         }
     }
-
 }

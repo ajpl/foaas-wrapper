@@ -17,7 +17,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.time.Instant
 
-
 val applicationAPIClient = APIClient()
 val rateLimiter: RateLimiter<Any> = RateLimiter()
 fun Application.message(ApiClient: APIClient = applicationAPIClient) {
