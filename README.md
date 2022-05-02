@@ -34,8 +34,8 @@ Fuck Off As A Service ([FOAAS](https://www.foaas.com)) provides a dummy API to p
     - Content: 
 ```json
 {
-   message: "foo",
-   subtitle: "bar"
+   "message": "foo",
+   "subtitle": "bar"
 }
 ```
 ## Run tests
