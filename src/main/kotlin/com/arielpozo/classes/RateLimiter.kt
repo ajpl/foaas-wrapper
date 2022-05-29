@@ -13,7 +13,7 @@ const val HASHMAP_RESET_TIME_IN_MINUTES: Long = 10
 
 class RateLimiter<T : Any>(val quota: Int = DEFAULT_RATE_LIMIT, val resetDuration: Duration = Duration.ofSeconds(DEFAULT_RATE_LIMIT_DURATION_IN_SECONDS)) {
     private val activity: ConcurrentMap<T, Rate> = ConcurrentHashMap()
-    private val lastGeneralReset: Instant = Instant.now()
+    private var lastGeneralReset: Instant = Instant.now()
 
     fun useQuota(key: T): Rate {
         activity.compute(key) { _, keyRate: Rate? ->
@@ -38,6 +38,7 @@ class RateLimiter<T : Any>(val quota: Int = DEFAULT_RATE_LIMIT, val resetDuratio
         activityToRemove.forEach {
             activity.remove(it)
         }
+        this.lastGeneralReset = Instant.now()
     }
 
     private fun getNewRate(): Rate {
